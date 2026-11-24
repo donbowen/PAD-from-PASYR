@@ -1,0 +1,10 @@
+# Data is not in git: the USPTO zips, everything built from them, and the cached 2023 release.
+/inputs_raw/
+/work/
+/outputs/*
+!/outputs/validation/
+/outputs/validation/*
+!/outputs/validation/*.csv
+
+__pycache__/
+*.log

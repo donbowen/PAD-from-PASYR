@@ -1,0 +1,5 @@
+column,n,share_equal,filled,emptied,changed
+"(rows matched on rf_id+appno_doc_num+grant_doc_num; filled = rows only in new, emptied = rows only in 2023)",17862333,,513166,800043,
+admin_appl_id_for_grant,17862333,0.9985476701167759,9,23423,2510
+admin_pat_no_for_appno,17862333,0.9985159833264782,566,25893,49
+error,17862333,0.9998272342140302,0,0,3086

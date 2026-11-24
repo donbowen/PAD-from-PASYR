@@ -1,0 +1,4 @@
+column,n,share_equal,filled,emptied,changed
+"(rows matched on rf_id; filled = rows only in new, emptied = rows only in 2023)",10459259,,1078598,72638,
+convey_ty,10459259,0.9999998087818649,0,0,2
+employer_assign,10459259,0.9979840828112202,0,0,21085
