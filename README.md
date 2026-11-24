@@ -48,7 +48,7 @@ python code/06_validate.py           # compare outputs/ with the 2023 release
 python code/07_export.py             # -> outputs/export/*.csv.zip and *.dta.zip
 ```
 
-On a 24-core machine the whole run takes about 15 minutes, most of it in step 07.
+On a 24-core machine the whole run takes about 35 minutes: 4 for parsing, 10 for steps 02-06, and 20 for the Stata export in step 07.
 
 ## What you get
 
