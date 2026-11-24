@@ -114,7 +114,17 @@ def do_block(table: str, csv: str, dta: str) -> str:
         lab = label.replace('"', "'")
         lines.append(f'label variable {col} "{lab}"')
     order = ' '.join(c for c, _, _ in SPEC[table])
-    lines += [f'order {order}', 'compress', f'save "{dta}", replace', '']
+    # Long fixed-width strings (str81-str2045) pad every row to the longest value and make the
+    # file several times larger; store them as strL, as the 2023 release did.
+    lines += [f'order {order}', 'compress',
+              'quietly ds, has(type string)',
+              'foreach v in `r(varlist)\' {',
+              '    local t : type `v\'',
+              '    if "`t\'" != "strL" {',
+              '        if real(substr("`t\'", 4, .)) > 80 recast strL `v\'',
+              '    }',
+              '}',
+              f'save "{dta}", replace', '']
     return '\n'.join(lines)
 
 

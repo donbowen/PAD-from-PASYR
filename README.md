@@ -1,6 +1,23 @@
 # PAD rebuilt from the PASYR backfile
 
-This folder rebuilds the USPTO **Patent Assignment Dataset (PAD)** from the USPTO's *Annual
+**Download: [release 2026.04-dropin](https://github.com/donbowen/PAD-from-PASYR/releases/tag/2026.04-dropin)**: the six Patent Assignment Dataset tables
+through April 2026, as `.csv.zip`, `.dta.zip` and `.parquet`, with `SHA256SUMS.txt`. They have
+the same file names, columns and types as the 2023 PAD release, so existing code works
+unchanged, e.g. `pd.read_stata('assignment.dta.zip')` or `pd.read_csv('assignee.csv.zip')`.
+Read identifiers such as `appno_doc_num` and `grant_doc_num` as text.
+
+| table | contents | direct downloads |
+| --- | --- | --- |
+| `assignment` | one row per transaction | [csv.zip](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/assignment.csv.zip) · [dta.zip](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/assignment.dta.zip) · [parquet](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/assignment.parquet) |
+| `assignor` | assignors of each transaction | [csv.zip](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/assignor.csv.zip) · [dta.zip](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/assignor.dta.zip) · [parquet](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/assignor.parquet) |
+| `assignee` | assignees of each transaction | [csv.zip](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/assignee.csv.zip) · [dta.zip](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/assignee.dta.zip) · [parquet](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/assignee.parquet) |
+| `documentid` | patents / applications in each transaction | [csv.zip](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/documentid.csv.zip) · [dta.zip](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/documentid.dta.zip) · [parquet](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/documentid.parquet) |
+| `assignment_conveyance` | conveyance type, employer-assignment flag | [csv.zip](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/assignment_conveyance.csv.zip) · [dta.zip](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/assignment_conveyance.dta.zip) · [parquet](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/assignment_conveyance.parquet) |
+| `documentid_admin` | application / patent number checks | [csv.zip](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/documentid_admin.csv.zip) · [dta.zip](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/documentid_admin.dta.zip) · [parquet](https://github.com/donbowen/PAD-from-PASYR/releases/download/2026.04-dropin/documentid_admin.parquet) |
+
+---
+
+This repository rebuilds the USPTO **Patent Assignment Dataset (PAD)** from the USPTO's *Annual
 Patent Assignment XML backfile* (product **PASYR**). PAD's own release (ECORSEXC, last one
 dated January 2024) is no longer published. The output has the same six tables, with the same
 columns, names, types and file formats as the 2023 release, so it can replace it in existing
@@ -80,7 +97,7 @@ are those with at least one such property.
 * `outputs/` (**published**, the drop-in) applies the same rule. A property counts if it has a
   publication or patent number in the 2026 XML, so applications published after January 2024
   are now included.
-* `outputs/all/` keeps everything.
+* `outputs/all/` keeps everything. It is not in the release; run the code to build it.
 
 `employer_assign` is computed separately in each version, because it depends on how many
 properties a transaction has and on which transaction comes first for a property.
@@ -88,7 +105,8 @@ properties a transaction has and on which transaction comes first for a property
 ## How the tables are built
 
 **Straight from the XML** (`assignment`, `assignor`, `assignee`, `documentid`). Values are as
-the XML gives them. Leading and trailing spaces are stripped, and empty strings become missing.
+the XML gives them, except that runs of spaces become one space and leading and trailing
+spaces are stripped (as in 2023), and empty strings become missing.
 Each `<patent-property>` gives one `documentid` row. Its `<document-id>`s are sorted by kind
 code: `X0` is the application, `A1` the publication, `B1`/`B2` the patent. These are the only
 kinds in the backfile. A reel/frame that appears twice keeps its latest copy, as the 2015
@@ -182,7 +200,7 @@ These come from the source, not the parsing. Each was traced to the raw XML.
 * **PCT and provisional numbers.** For about 45,000 transactions, the backfile lists the
   property by its PCT or provisional application number where the 2023 release listed the US
   application or patent. With no publication or patent number, they fall outside the drop-in.
-  They are in `outputs/all/`.
+  They are in `outputs/all/` (built by the code, not in the release).
 * **13,464 other 2023 transactions** are not in the backfile, for no reason visible in the
   data.
 * **`employer_assign`** agrees on 99.80%. The rule reproduces 99.92% when run on the 2023
@@ -205,3 +223,10 @@ inputs_raw/ the PASYR zips (not in git)
 work/       intermediate files (not in git)
 outputs/    the tables (not in git, except outputs/validation/*.csv)
 ```
+
+## Credits and license
+
+The data are USPTO patent assignment records, a U.S. government work. The table design follows
+Marco, Myers, Graham, D'Agostino and Apple (2015), "The USPTO Patent Assignment Dataset:
+Descriptions and Analysis", USPTO Economic Working Paper 2015-2 (in `docs/`). The code is under
+the MIT license (`LICENSE`).
